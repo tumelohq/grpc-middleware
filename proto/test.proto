@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+message Empty {
+}
+
+message Request {
+    int32 code = 1;
+    string message = 2;
+}
+
+service TestService {
+    rpc Ping (Request) returns (Empty);
+}
