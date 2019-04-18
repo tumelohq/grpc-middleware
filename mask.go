@@ -16,7 +16,7 @@ func UnaryServerInterceptor(cs ...codes.Code) grpc.UnaryServerInterceptor {
 			errCode := status.Code(err)
 			for _, c := range cs {
 				if errCode == c {
-					err = status.Error(codes.Internal, "Internal server error")
+					err = status.Error(c, c.String())
 				}
 			}
 			return nil, err

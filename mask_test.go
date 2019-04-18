@@ -21,7 +21,7 @@ func TestUnaryServerInterceptor(t *testing.T) {
 	}{
 		{codes.OK, nil},
 		{codes.Canceled, status.Error(codes.Canceled, "Canceled")},
-		{codes.Unknown, status.Error(codes.Internal, "Internal server error")},
+		{codes.Unknown, status.Error(codes.Unknown, "Unknown")},
 		{codes.InvalidArgument, status.Error(codes.InvalidArgument, "InvalidArgument")},
 		{codes.DeadlineExceeded, status.Error(codes.DeadlineExceeded, "DeadlineExceeded")},
 		{codes.NotFound, status.Error(codes.NotFound, "NotFound")},
@@ -32,7 +32,7 @@ func TestUnaryServerInterceptor(t *testing.T) {
 		{codes.Aborted, status.Error(codes.Aborted, "Aborted")},
 		{codes.OutOfRange, status.Error(codes.OutOfRange, "OutOfRange")},
 		{codes.Unimplemented, status.Error(codes.Unimplemented, "Unimplemented")},
-		{codes.Internal, status.Error(codes.Internal, "Internal server error")},
+		{codes.Internal, status.Error(codes.Internal, "Internal")},
 		{codes.Unavailable, status.Error(codes.Unavailable, "Unavailable")},
 		{codes.DataLoss, status.Error(codes.DataLoss, "DataLoss")},
 		{codes.Unauthenticated, status.Error(codes.Unauthenticated, "Unauthenticated")},
