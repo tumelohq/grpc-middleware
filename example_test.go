@@ -1,4 +1,4 @@
-package grpcmap_test
+package grpc_test
 
 import (
 	"context"
@@ -6,8 +6,8 @@ import (
 	"net"
 	"testing"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpcredefine "github.com/tumelohq/grpc-middleware/map"
+	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpcmap "github.com/tumelohq/grpc-middleware/map"
 	grpcmask "github.com/tumelohq/grpc-middleware/mask"
 	test "github.com/tumelohq/grpc-middleware/testing"
 	"google.golang.org/grpc"
@@ -19,14 +19,14 @@ func Example() {
 	serverAddress := "127.0.0.1:8900"
 	interceptor := grpc.UnaryInterceptor(
 		// wrap errors, then mask them so unknown errors are completely identical to unknown ones
-		grpc_middleware.ChainUnaryServer(
+		grpcmiddleware.ChainUnaryServer(
 			// masks errors
 			grpcmask.UnaryServerInterceptor(
 				codes.Internal,
 				codes.Unknown,
 			),
 			// wraps errors
-			grpcredefine.UnaryServerInterceptor(map[codes.Code]codes.Code{
+			grpcmap.UnaryServerInterceptor(map[codes.Code]codes.Code{
 				codes.Unknown: codes.Internal,
 			}),
 		),

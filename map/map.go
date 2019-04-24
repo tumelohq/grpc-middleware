@@ -14,10 +14,8 @@ func UnaryServerInterceptor(cm map[codes.Code]codes.Code) grpc.UnaryServerInterc
 		resp, err := handler(ctx, req)
 		if err != nil {
 			errCode := status.Code(err)
-
 			if code, ok := cm[errCode]; ok {
-				s := status.Convert(err)
-				return nil, status.Error(code, s.Message())
+				return nil, status.Error(code, status.Convert(err).Message())
 			}
 			return nil, err
 		}

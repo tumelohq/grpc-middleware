@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net"
 
-	grpcredefine "github.com/tumelohq/grpc-middleware/map"
+	grpcmap "github.com/tumelohq/grpc-middleware/map"
 	test "github.com/tumelohq/grpc-middleware/testing"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -14,7 +14,7 @@ import (
 func ExampleUnaryServerInterceptor() {
 	serverAddress := "127.0.0.1:8900"
 	interceptor := grpc.UnaryInterceptor(
-		grpcredefine.UnaryServerInterceptor(map[codes.Code]codes.Code{
+		grpcmap.UnaryServerInterceptor(map[codes.Code]codes.Code{
 			codes.Unknown: codes.Internal,
 		}),
 	)
@@ -28,7 +28,6 @@ func ExampleUnaryServerInterceptor() {
 	defer grpcServer.GracefulStop()
 
 	conn, _ := grpc.Dial(serverAddress, grpc.WithInsecure())
-
 	c := test.NewTestServiceClient(conn)
 
 	req := &test.Request{
@@ -36,7 +35,6 @@ func ExampleUnaryServerInterceptor() {
 		Message: "an internal error",
 	}
 	_, err := c.Ping(context.Background(), req)
-
 	fmt.Println(err)
 
 	req = &test.Request{
@@ -44,7 +42,6 @@ func ExampleUnaryServerInterceptor() {
 		Message: "an unknown error",
 	}
 	_, err = c.Ping(context.Background(), req)
-
 	fmt.Println(err)
 
 	req = &test.Request{
@@ -52,7 +49,6 @@ func ExampleUnaryServerInterceptor() {
 		Message: "entity not found",
 	}
 	_, err = c.Ping(context.Background(), req)
-
 	fmt.Println(err)
 
 	// Output:

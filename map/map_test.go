@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	grpcredefine "github.com/tumelohq/grpc-middleware/map"
+	grpcmap "github.com/tumelohq/grpc-middleware/map"
 	test "github.com/tumelohq/grpc-middleware/testing"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -15,18 +15,9 @@ import (
 
 func TestUnaryServerInterceptor(t *testing.T) {
 	t.Parallel()
-	tts := []struct {
-		code     codes.Code
-		expected error
-	}{
-		{codes.OK, nil},
-		{codes.Unknown, status.Error(codes.Internal, "Unknown")},
-		{codes.Internal, status.Error(codes.Internal, "Internal")},
-		{codes.NotFound, status.Error(codes.NotFound, "NotFound")},
-	}
 	serverAddress := "127.0.0.1:8900"
 	interceptor := grpc.UnaryInterceptor(
-		grpcredefine.UnaryServerInterceptor(map[codes.Code]codes.Code{
+		grpcmap.UnaryServerInterceptor(map[codes.Code]codes.Code{
 			codes.Unknown: codes.Internal,
 		}),
 	)
@@ -45,7 +36,18 @@ func TestUnaryServerInterceptor(t *testing.T) {
 	if err != nil {
 		t.Fatalf("can't dial %s: %v", serverAddress, err)
 	}
+	defer conn.Close()
 	c := test.NewTestServiceClient(conn)
+
+	tts := []struct {
+		code     codes.Code
+		expected error
+	}{
+		{codes.OK, nil},
+		{codes.Unknown, status.Error(codes.Internal, "Unknown")},
+		{codes.Internal, status.Error(codes.Internal, "Internal")},
+		{codes.NotFound, status.Error(codes.NotFound, "NotFound")},
+	}
 
 	for _, tt := range tts {
 		t.Run(tt.code.String(), func(t *testing.T) {
