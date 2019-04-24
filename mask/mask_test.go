@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	grpcmask "github.com/tumelohq/grpc-mask"
-	test "github.com/tumelohq/grpc-mask/proto"
+	grpcmask "github.com/tumelohq/grpc-middleware/mask"
+	test "github.com/tumelohq/grpc-middleware/testing"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

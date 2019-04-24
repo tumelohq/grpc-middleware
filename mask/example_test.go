@@ -1,34 +1,23 @@
-package grpcmap_test
+package grpcmask_test
 
 import (
 	"context"
 	"fmt"
 	"net"
-	"testing"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpcredefine "github.com/tumelohq/grpc-middleware/map"
 	grpcmask "github.com/tumelohq/grpc-middleware/mask"
 	test "github.com/tumelohq/grpc-middleware/testing"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-func Example() {
+func ExampleUnaryServerInterceptor() {
 	serverAddress := "127.0.0.1:8900"
 	interceptor := grpc.UnaryInterceptor(
-		// wrap errors, then mask them so unknown errors are completely identical to unknown ones
-		grpc_middleware.ChainUnaryServer(
-			// masks errors
-			grpcmask.UnaryServerInterceptor(
-				codes.Internal,
-				codes.Unknown,
-			),
-			// wraps errors
-			grpcredefine.UnaryServerInterceptor(map[codes.Code]codes.Code{
-				codes.Unknown: codes.Internal,
-			}),
+		// masks the following status codes
+		grpcmask.UnaryServerInterceptor(
+			codes.Internal,
+			codes.Unknown,
 		),
 	)
 	grpcServer := grpc.NewServer(interceptor)
@@ -44,41 +33,32 @@ func Example() {
 
 	c := test.NewTestServiceClient(conn)
 
-	// internal error is masked
 	req := &test.Request{
 		Code:    int32(codes.Internal),
-		Message: "some sensitive info",
+		Message: "some really sensitive data",
 	}
 	_, err := c.Ping(context.Background(), req)
+
 	fmt.Println(err)
 
-	// wraps unknown error as internal, then masks it
 	req = &test.Request{
 		Code:    int32(codes.Unknown),
-		Message: "unknown data for unknown status",
+		Message: "some other sensitive data",
 	}
 	_, err = c.Ping(context.Background(), req)
+
 	fmt.Println(err)
 
-	// ignores errors with not found status
 	req = &test.Request{
 		Code:    int32(codes.NotFound),
 		Message: "entity not found",
 	}
 	_, err = c.Ping(context.Background(), req)
+
 	fmt.Println(err)
 
 	// Output:
 	// rpc error: code = Internal desc = Internal
-	// rpc error: code = Internal desc = Internal
+	// rpc error: code = Unknown desc = Unknown
 	// rpc error: code = NotFound desc = entity not found
-}
-
-type TestPingService struct {
-	T *testing.T
-}
-
-func (s TestPingService) Ping(_ context.Context, r *test.Request) (*test.Empty, error) {
-	c := codes.Code(r.GetCode())
-	return &test.Empty{}, status.Error(c, r.GetMessage())
 }
