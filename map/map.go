@@ -1,4 +1,4 @@
-package grpcmask
+package grpcmap
 
 import (
 	"context"
@@ -9,15 +9,13 @@ import (
 )
 
 // UnaryServerInterceptor implements the UnaryServerInterceptor interface
-func UnaryServerInterceptor(cs ...codes.Code) grpc.UnaryServerInterceptor {
+func UnaryServerInterceptor(cm map[codes.Code]codes.Code) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		resp, err := handler(ctx, req)
 		if err != nil {
 			errCode := status.Code(err)
-			for _, c := range cs {
-				if errCode == c {
-					err = status.Error(codes.Internal, "Internal server error")
-				}
+			if code, ok := cm[errCode]; ok {
+				return nil, status.Error(code, status.Convert(err).Message())
 			}
 			return nil, err
 		}
