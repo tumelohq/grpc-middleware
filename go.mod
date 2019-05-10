@@ -1,4 +1,4 @@
-module github.com/tumelohq/grpc-mask
+module github.com/tumelohq/grpc-middleware
 
 go 1.12
 
