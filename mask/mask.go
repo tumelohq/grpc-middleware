@@ -9,6 +9,8 @@ import (
 )
 
 // UnaryServerInterceptor implements the UnaryServerInterceptor interface
+// Given a list of codes, checks the request respons off the list of codes, if any match, the original
+// error message is overwritten with the status codes string representation.
 func UnaryServerInterceptor(cs ...codes.Code) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		resp, err := handler(ctx, req)
