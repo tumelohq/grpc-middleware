@@ -8,7 +8,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// UnaryServerInterceptor implements the UnaryServerInterceptor interface
+// UnaryServerInterceptor implements the UnaryServerInterceptor interface.
+// It maps grpc codes from one code to another.
 func UnaryServerInterceptor(cm map[codes.Code]codes.Code) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		resp, err := handler(ctx, req)
