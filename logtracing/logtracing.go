@@ -14,8 +14,8 @@ import (
 func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		tags := grpc_ctxtags.Extract(ctx)
-		tags = tags.Set("span.trace_id", trace.FromContext(ctx).SpanContext().TraceID)
-		tags = tags.Set("span.span_id", trace.FromContext(ctx).SpanContext().SpanID)
+		tags = tags.Set("span.trace_id", trace.FromContext(ctx).SpanContext().TraceID.String())
+		tags = tags.Set("span.span_id", trace.FromContext(ctx).SpanContext().SpanID.String())
 		return handler(ctx, req)
 	}
 }
