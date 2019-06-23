@@ -9,5 +9,5 @@ require (
 	github.com/stretchr/testify v1.3.0 // indirect
 	go.opencensus.io v0.22.0
 	golang.org/x/net v0.0.0-20190620203927-3b0461eec859 // indirect
-	google.golang.org/grpc v1.20.1
+	google.golang.org/grpc v1.21.1
 )
