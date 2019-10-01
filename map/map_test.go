@@ -15,7 +15,7 @@ import (
 
 func TestUnaryServerInterceptor(t *testing.T) {
 	t.Parallel()
-	serverAddress := "127.0.0.1:8900"
+	serverAddress := "127.0.0.1:8901"
 	interceptor := grpc.UnaryInterceptor(
 		grpcmap.UnaryServerInterceptor(map[codes.Code]codes.Code{
 			codes.Unknown: codes.Internal,
